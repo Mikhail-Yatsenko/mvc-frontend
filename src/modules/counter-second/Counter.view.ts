@@ -1,7 +1,9 @@
-import {IView} from "../../types/counter/view";
+import {IView} from "../../types/counter-second/view";
 import {CounterController} from "./Counter.controller";
+import {CounterModel} from "./Counter.model.ts";
 
 export class CounterView implements IView {
+    model: CounterModel;
     controller: CounterController;
     root: HTMLElement;
 
@@ -11,7 +13,8 @@ export class CounterView implements IView {
 
     constructor(root: HTMLElement) {
         this.root = root;
-        this.controller = new CounterController();
+        this.model = new CounterModel(this);
+        this.controller = new CounterController(this.model);
 
         this.title = document.createElement("h1");
         this.title.innerText = 'Value = 0';
@@ -23,21 +26,13 @@ export class CounterView implements IView {
         this.bindListeners();
     }
 
-    private onIncrementClick = () => {
-        this.updateTitle(this.controller.handleIncrement());
-    }
-
-    private onDecrementClick = () => {
-        this.updateTitle(this.controller.handleDecrement());
-    }
-
     private bindListeners() {
-        this.incrementButton.addEventListener('click', this.onIncrementClick);
-        this.decrementButton.addEventListener('click', this.onDecrementClick);
+        this.incrementButton.addEventListener('click', this.controller.handleIncrement.bind(this));
+        this.decrementButton.addEventListener('click', this.controller.handleDecrement.bind(this));
     }
 
-    public updateTitle(value: number) {
-        this.title.innerText = `Value = ${value}`;
+    public updateTitle() {
+        this.title.innerText = `Value = ${this.model.value}`;
     }
 
     public mount() {

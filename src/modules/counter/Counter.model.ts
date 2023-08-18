@@ -1,4 +1,4 @@
-import {IModel} from "../../types/model";
+import {IModel} from "../../types/counter/model";
 
 export class CounterModel implements IModel {
     value: number;
